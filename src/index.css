@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+/* @layer base puts these styles at the beginning, 
+   so you can easily override them with utility classes later 
+   (e.g., className="bg-red-500") without !important.
+*/
+@layer base {
+  body {
+    @apply bg-zinc-950 text-zinc-100 m-0 min-h-screen;
+  }
+
+  /* GLOBAL DROPDOWN STYLE */
+  select {
+    /* 1. Use Tailwind utilities for colors (Linked to System) */
+    @apply bg-zinc-900/80 text-white border border-white/10 rounded-lg;
+
+    /* 2. Reset Appearance */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* 3. Spacing & Typography */
+    @apply py-2 pl-3 pr-10 text-sm font-medium;
+
+    /* 4. The Custom Arrow (Encoded for safety) */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+  }
+
+  /* 5. Focus State (Critical for Accessibility) */
+  select:focus {
+    @apply outline-none ring-2 ring-yellow-500/50 border-yellow-500;
+  }
+
+  /* 6. Options Background */
+  option {
+    @apply bg-zinc-950 text-white;
+  }
+}
