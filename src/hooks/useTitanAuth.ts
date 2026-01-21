@@ -15,7 +15,8 @@ export interface UserProfile {
 // 🔐 THE SKELETON KEY LIST
 const FOUNDER_EMAILS = [
     "founder@d2v.internal",
-    "luckysuganth@gmail.com"
+    "luckysuganth@gmail.com",
+    "thar26un@gmail.com"
     // "dotstovolumes@gmail.com" <-- REMOVED!
 ];
 
@@ -41,7 +42,8 @@ export function useTitanAuth() {
         if (!user) return;
 
         // A. GOD MODE BYPASS (The Skeleton Key) - Static Override
-        if (user.email && FOUNDER_EMAILS.includes(user.email)) {
+        const email = user.email?.toLowerCase();
+        if (email && FOUNDER_EMAILS.includes(email)) {
             console.log("👑 GOD MODE: Skeleton Key Active for", user.email);
             // We still listen to DB to respect 'name' or 'companyName' updates if any, 
             // BUT we force role='founder'.
@@ -58,7 +60,7 @@ export function useTitanAuth() {
                     uid: user.uid,
                     email: user.email,
                     name: data.displayName || user.displayName || "Titan User",
-                    role: (user.email && FOUNDER_EMAILS.includes(user.email)) ? "founder" : (data.role || "viewer"), // FORCE FOUNDER if in list
+                    role: (user.email && FOUNDER_EMAILS.includes(user.email.toLowerCase())) ? "founder" : (data.role || "viewer"), // FORCE FOUNDER if in list
                     companyName: data.companyName,
                     photoURL: data.photoURL || user.photoURL
                 };
@@ -114,6 +116,6 @@ export function useTitanAuth() {
 const finalProfileFromFallback = (user: User): UserProfile => ({
     uid: user.uid,
     email: user.email,
-    role: "client",
+    role: (user.email && FOUNDER_EMAILS.includes(user.email.toLowerCase())) ? "founder" : "client",
     name: user.displayName || "Guest"
 });

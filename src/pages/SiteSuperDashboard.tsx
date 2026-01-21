@@ -26,8 +26,7 @@ export function SiteSuperDashboard() {
                 <BananaCard className="active:scale-95 transition-transform bg-zinc-800/80">
                     <div className="text-center py-6">
                         <div className="text-6xl mb-4">💰</div>
-                        <h3 className="text-xl font-bold text-white">My Wallet</h3>
-                        <p className="text-zinc-400 text-sm mt-2">View petty cash balance</p>
+                      <p className="text-zinc-400 text-sm mt-2">View petty cash balance</p>
                     </div>
                 </BananaCard>
             </div>

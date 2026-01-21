@@ -21,7 +21,8 @@ export function useAuth() {
 
             if (firebaseUser) {
                 // NUCLEAR BYPASS: Trust the Founder Email immediately
-                if (firebaseUser.email === "founder@d2v.internal") {
+                const FOUNDER_EMAILS = ["founder@d2v.internal", "thar26un@gmail.com"];
+                if (firebaseUser.email && FOUNDER_EMAILS.includes(firebaseUser.email)) {
                     console.log("useAuth: Founder Bypass Active");
                     setProfile({
                         uid: firebaseUser.uid,

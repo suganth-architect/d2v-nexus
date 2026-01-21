@@ -69,7 +69,7 @@ export default function App() {
             } />
 
             {/* DIRECTORY */}
-            <Route path="/command/directory" element={
+            <Route path="/command/directory/*" element={
               <ProtectedRoute>
                 <UserDirectory />
               </ProtectedRoute>

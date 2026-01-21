@@ -29,7 +29,7 @@ export function CommandLauncher({ isOpen, onClose }: CommandLauncherProps) {
         {
             title: "Directory",
             icon: Users,
-            path: "/directory",
+            path: "/command/directory",
             color: "text-blue-400",
             bg: "bg-blue-500/10",
             border: "group-hover:border-blue-500/30"
@@ -37,7 +37,7 @@ export function CommandLauncher({ isOpen, onClose }: CommandLauncherProps) {
         {
             title: "Muster Roll",
             icon: ClipboardCheck,
-            path: "/directory?tab=attendance",
+            path: "/command/directory/attendance",
             color: "text-yellow-400",
             bg: "bg-yellow-500/10",
             border: "group-hover:border-yellow-500/30"

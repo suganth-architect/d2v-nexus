@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { collection, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { BananaButton } from "../../components/ui/BananaButton";
@@ -10,7 +11,24 @@ import { AttendanceTab } from "../../components/directory/AttendanceTab";
 import type { User, Client, Vendor } from "../../types";
 
 export function UserDirectory() {
-    const [activeTab, setActiveTab] = useState<'team' | 'clients' | 'vendors' | 'leaderboard' | 'attendance'>('team');
+    const location = useLocation();
+    const navigate = useNavigate();
+    
+    // Extract tab from path: /command/directory/attendance -> attendance
+    // If path is just /command/directory, default to 'team'
+    const pathParts = location.pathname.split('/');
+    const currentPathTab = pathParts[pathParts.length - 1];
+    
+    const validTabs = ['team', 'clients', 'vendors', 'leaderboard', 'attendance'];
+    const activeTab = validTabs.includes(currentPathTab) ? currentPathTab : 'team';
+
+    const handleTabChange = (tab: string) => {
+        if (tab === 'team') {
+            navigate('/command/directory');
+        } else {
+            navigate(`/command/directory/${tab}`);
+        }
+    };
 
     // Data States
     const [team, setTeam] = useState<User[]>([]);
@@ -18,6 +36,17 @@ export function UserDirectory() {
     const [vendors, setVendors] = useState<Vendor[]>([]);
 
     const [showAddModal, setShowAddModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+    const handleEdit = (user: User) => {
+        setSelectedUser(user);
+        setShowAddModal(true);
+    };
+
+    const handleAddNew = () => {
+        setSelectedUser(null);
+        setShowAddModal(true);
+    };
 
     // STABLE SUBSCRIPTION (No Flashing)
     useEffect(() => {
@@ -42,7 +71,7 @@ export function UserDirectory() {
                 </div>
                 <div className="flex bg-zinc-900 p-1 rounded-lg border border-white/10">
                     {['team', 'clients', 'vendors', 'leaderboard', 'attendance'].map((tab) => (
-                        <button key={tab} onClick={() => setActiveTab(tab as any)}
+                        <button key={tab} onClick={() => handleTabChange(tab as any)}
                             className={`px-4 py-2 rounded-md text-sm font-medium transition-all capitalize ${activeTab === tab ? "bg-yellow-500 text-black" : "text-zinc-400 hover:text-white"}`}
                         >
                             {tab}
@@ -54,11 +83,26 @@ export function UserDirectory() {
             {/* Content Switcher */}
             {activeTab === 'team' && (
                 <div className="space-y-4">
-                    <div className="flex justify-end"><BananaButton onClick={() => setShowAddModal(true)}><Plus className="w-4 h-4 mr-2" /> Add Member</BananaButton></div>
+                    <div className="flex justify-end"><BananaButton onClick={handleAddNew}><Plus className="w-4 h-4 mr-2" /> Add Member</BananaButton></div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {team.map(user => (
                             <BananaCard key={user.uid} className="relative group">
-                                <button onClick={() => handleDelete('users', user.uid)} className="absolute top-4 right-4 text-zinc-600 hover:text-red-500 opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4" /></button>
+                                <div className="absolute top-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button 
+                                        onClick={() => handleEdit(user)} 
+                                        className="text-zinc-600 hover:text-white transition-colors p-1"
+                                        title="Edit Member"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                    </button>
+                                    <button 
+                                        onClick={() => handleDelete('users', user.uid)} 
+                                        className="text-zinc-600 hover:text-red-500 transition-colors p-1"
+                                        title="Delete Member"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-zinc-400 border border-white/10">
                                         {user.displayName?.[0] || "U"}
@@ -111,7 +155,11 @@ export function UserDirectory() {
             {activeTab === 'leaderboard' && <LeaderboardTab />}
             {activeTab === 'attendance' && <AttendanceTab />}
 
-            <CreateUserModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
+            <CreateUserModal 
+                isOpen={showAddModal} 
+                onClose={() => setShowAddModal(false)}
+                userToEdit={selectedUser} 
+            />
         </div>
     );
 }

@@ -54,7 +54,7 @@ export function HallOfFame() {
     return (
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 h-full flex flex-col">
             <div
-                onClick={() => navigate('/directory')}
+                onClick={() => navigate('/command/directory')}
                 className="flex items-center justify-between mb-6 cursor-pointer group"
             >
                 <div className="flex items-center gap-2">

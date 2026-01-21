@@ -16,7 +16,6 @@ export function RoleRouter() {
     // 2. Not Logged In
     if (!profile) return <Navigate to="/login" replace />;
 
-    // 3. Strict Role Routing
     // Ensure role matches strict types or fallback strings
     const role = profile.role as string;
 
@@ -25,8 +24,10 @@ export function RoleRouter() {
             return <Navigate to="/command/dashboard" replace />;
 
         case 'architect':
+            return <Navigate to="/studio/dashboard" replace />;
+
         case 'site_super':
-            return <Navigate to="/dashboard/site" replace />;
+            return <Navigate to="/portal/site" replace />;
 
         case 'accountant':
             return <Navigate to="/portal/ledger" replace />;
